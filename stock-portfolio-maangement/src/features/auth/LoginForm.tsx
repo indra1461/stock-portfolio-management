@@ -2,6 +2,7 @@
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { LoginPayload } from "./authTypes";
+import { setAuthData }  from "@/app/utils/storage";
 import { loginUser } from "./authServces";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -11,6 +12,7 @@ import { useState } from "react";
 
 export default function LoginForm() {
   const [apiError, setApiError] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -22,7 +24,18 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginPayload) => {
     try {
+        setApiError("");
+        setLoading(true);
       const response = await loginUser(data);
+
+      setAuthData(
+        response.accessToken,
+        {
+          id: response.id,
+          name: response.firstName,
+          email: response.email,
+        }
+      );
 
       dispatch(
         loginSuccess({
@@ -41,6 +54,8 @@ export default function LoginForm() {
         ? error.response?.data?.message || "Login Failed"
         : "Login Failed";
       setApiError(message);
+    } finally{
+      setLoading(false);  
     }
   };
 
@@ -95,10 +110,11 @@ export default function LoginForm() {
         </div>
 
         <button
+        disabled={loading}
           type="submit"
           className="mt-1 w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-white font-semibold text-sm tracking-wide transition-colors cursor-pointer shadow-lg shadow-emerald-500/20"
         >
-          Sign In
+       {loading ? "Signing In..." : "Sign In"}
         </button>
 
         <p className="text-center text-slate-500 text-xs">

@@ -1,12 +1,14 @@
 import { AuthState } from './authTypes';
 import {createSlice} from "@reduxjs/toolkit";
+import { clearAuthData } from "@/app/utils/storage";
 
 const initialState: AuthState = {
     user:null,
     token:null,
     isAuthenticated:false,
     loading:false,
-    error:null
+    error:null,
+    initialized: false,
 }
 
 
@@ -20,7 +22,18 @@ const authSlice = createSlice({
             state.isAuthenticated = true;
         state.error = null;
     },
+
+        restoreSession:(state,action)=>{
+            state.user = action.payload.user;
+            state.token = action.payload.token;
+            state.isAuthenticated = !!action.payload.token;
+            state.initialized = true;
+        },
+        setInitialized: (state) => {
+            state.initialized = true;
+        },
             logout:(state)=>{
+                clearAuthData();
                 state.user = null;
                 state.token = null;
                 state.isAuthenticated = false;
@@ -30,5 +43,5 @@ const authSlice = createSlice({
         },
     });
 
-export const {loginSuccess,logout} = authSlice.actions;
+export const {loginSuccess,logout,restoreSession,setInitialized} = authSlice.actions;
 export default authSlice.reducer;
