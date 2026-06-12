@@ -13,13 +13,13 @@ export default function AuthInitializer() {
  const dispatch = useAppDispatch();
 
  useEffect(() => {
-  
+  console.log("AuthInitializer Running");
 
    const {
     user,
     token,
    } = getAuthData();
-   
+    console.log(user, token);
 
    if(token){
 

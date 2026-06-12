@@ -3,7 +3,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import StoreProvider from "../store/provider";
 import AuthInitializer from "@/components/auth/AuthInitializer";
+import { ToastContainer }
+from "react-toastify";
 
+import "react-toastify/dist/ReactToastify.css";
+import WatchlistInitializer from "@/components/watchlist/WatchlistInitializer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +34,8 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col"><StoreProvider><AuthInitializer />{children}</StoreProvider></body>
+      <body className="min-h-full flex flex-col"><StoreProvider><AuthInitializer /><WatchlistInitializer />{children}</StoreProvider> <ToastContainer />
+    </body>
     </html>
   );
 }
